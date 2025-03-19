@@ -1,14 +1,26 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "ES2023",
+    "module": "commonjs",
     "strict": true,
-    "moduleResolution": "node",
-    "module": "CommonJS",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "outDir": "./bin",
     "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "noImplicitAny": false,
+    "baseUrl": "./k21",
+    "paths": {
+      "@k21": [
+        "./"
+      ],
+      "@k21/*": [
+        "./*"
+      ]
+    },
     "allowSyntheticDefaultImports": true
   },
-  "include": ["."],
-  "exclude": ["node_modules", "bench", "__test__"]
+  "exclude": ["node_modules"]
 }

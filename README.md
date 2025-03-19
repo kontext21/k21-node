@@ -10,8 +10,6 @@
 
 # Usage
 
-
-
 ## Install this test package
 
 ```
@@ -35,6 +33,12 @@ yarn add @kontext21/k21
 ### Build
 
 After `yarn build/npm run build` command, you can see `package-template.[darwin|win32|linux].node` file in project root. This is the native addon built from [lib.rs](./src/lib.rs).
+
+### Build package
+
+```
+yarn run bp
+```
 
 ### Test
 
@@ -67,19 +71,14 @@ In this package, we choose a better way to solve this problem. We release differ
 - yarn
 - yarn build
 - yarn test
+- yarn run bp 
 
-And you will see:
+Afterwards you can import the locally build package into your project:
 
-```bash
-$ ava --verbose
-
-  ✔ sync function from native code
-  ✔ sleep function from native code (201ms)
-  ─
-
-  2 tests passed
-✨  Done in 1.12s.
 ```
+npm install ../k21-node/kontext21-k21-0.17.0.tgz
+```
+
 
 ## Release package
 

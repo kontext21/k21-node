@@ -11,12 +11,17 @@ crate-type = ["cdylib"]
 
 [dependencies]
 k21 = { git = "https://github.com/kontext21/k21.git" }
-# k21         = { path = "../../k21/libs/k21/" }
-napi        = { version = "2.0.0", features = ["tokio_rt"] }
-napi-derive = "2.0.0"
+# k21 = { path = "../k21/libs/k21/" }
+napi = { version = "2.16.13", default-features = false, features = [
+  "napi8",
+  "serde-json",
+  "tokio_rt",
+] }
+napi-derive = { version = "2.16.13", default-features = false }
 
 [build-dependencies]
-napi-build = "2"
+napi-build = "2.1.3"      # For building Node.js native modules
 
 [profile.release]
-lto = true
+codegen-units = 1
+lto = "fat"
