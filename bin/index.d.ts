@@ -1,2 +1,2 @@
-import { K21Pipeline } from './k21';
-export { K21Pipeline };
+import { K21 } from './k21';
+export { K21 };

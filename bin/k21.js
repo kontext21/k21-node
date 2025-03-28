@@ -3,20 +3,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.K21Pipeline = void 0;
+exports.K21 = void 0;
 const k21_internal_1 = __importDefault(require("./k21_internal"));
-class K21Pipeline {
+class K21 {
     capturer;
     uploader;
     processor;
     defaultCaptureConfig = {
         fps: 1,
-        recordLengthInSeconds: 10,
-        saveVideo: false,
-        outputDirVideo: '',
-        videoChunkDurationInSeconds: 60,
-        saveScreenshot: false,
-        outputDirScreenshot: '',
+        duration: 10,
     };
     defaultProcessorConfig = {
         processingType: 'OCR',
@@ -127,4 +122,4 @@ class K21Pipeline {
         }
     }
 }
-exports.K21Pipeline = K21Pipeline;
+exports.K21 = K21;

@@ -1,17 +1,17 @@
 // import k21 from '@k21'
-import { K21Pipeline } from '@k21'
+import { K21 } from '@k21'
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
 
 jest.setTimeout(20000);  // Set global timeout
 
-describe('K21Pipeline', () => {
-  let pipeline: K21Pipeline
+describe('K21', () => {
+  let k21: K21
   let tempDir: string;
 
   beforeEach(() => {
-    pipeline = new K21Pipeline()
+    k21 = new K21()
     // Create unique temp directory for each test
     tempDir = path.join(os.tmpdir(), `k21-test-${Date.now()}`);
     fs.mkdirSync(tempDir, { recursive: true });
@@ -26,9 +26,9 @@ describe('K21Pipeline', () => {
 
   describe('initialization', () => {
     test('should initialize with null values', () => {
-      expect(pipeline['capturer']).toBeNull()
-      expect(pipeline['uploader']).toBeNull()
-      expect(pipeline['processor']).toBeNull()
+      expect(k21['capturer']).toBeNull()
+      expect(k21['uploader']).toBeNull()
+      expect(k21['processor']).toBeNull()
     })
   })
 
@@ -38,9 +38,9 @@ describe('K21Pipeline', () => {
         fps: 1,
         duration: 5,
       }
-      pipeline.setCapturer(config)
-      expect(pipeline['capturer']).toEqual({
-        ...pipeline['defaultConfig'],
+      k21.setCapturer(config)
+      expect(k21['capturer']).toEqual({
+        ...k21['defaultConfig'],
         ...config
       })
     })
@@ -55,10 +55,10 @@ describe('K21Pipeline', () => {
         saveVideoTo: videoDir,
         videoChunkDuration: 10,
       }
-      pipeline.setCapturer(config)
-      expect(pipeline['capturer']).toEqual({
-        ...pipeline['defaultConfig'],
-        ...pipeline['defaultConfigSaveVideo'],
+      k21.setCapturer(config)
+      expect(k21['capturer']).toEqual({
+        ...k21['defaultConfig'],
+        ...k21['defaultConfigSaveVideo'],
         ...config
       })
     })
@@ -72,10 +72,10 @@ describe('K21Pipeline', () => {
         duration: 5,
         saveScreenshotTo: screenshotDir
       }
-      pipeline.setCapturer(config)
-      expect(pipeline['capturer']).toEqual({
-        ...pipeline['defaultConfig'],
-        ...pipeline['defaultConfigSaveScreenshot'],
+      k21.setCapturer(config)
+      expect(k21['capturer']).toEqual({
+        ...k21['defaultConfig'],
+        ...k21['defaultConfigSaveScreenshot'],
         ...config
       })
     })
@@ -93,18 +93,18 @@ describe('K21Pipeline', () => {
         saveVideoTo: videoDir,
         videoChunkDuration: 10,
       }
-      pipeline.setCapturer(config)
-      expect(pipeline['capturer']).toEqual({
-        ...pipeline['defaultConfig'],
-        ...pipeline['defaultConfigSaveVideo'],
-        ...pipeline['defaultConfigSaveScreenshot'],
+      k21.setCapturer(config)
+      expect(k21['capturer']).toEqual({
+        ...k21['defaultConfig'],
+        ...k21['defaultConfigSaveVideo'],
+        ...k21['defaultConfigSaveScreenshot'],
         ...config
       })
     })
 
     test('should throw error when setting capturer with uploader present', () => {
-      pipeline.setUploader('test-uploader')
-      expect(() => pipeline.setCapturer({
+      k21.setUploader('test-uploader')
+      expect(() => k21.setCapturer({
         fps: 1,
         duration: 5
         })).toThrow('Cannot set Capturer when Uploader is already set')
@@ -113,11 +113,11 @@ describe('K21Pipeline', () => {
 
   describe('setUploader', () => {
     test('should throw error when setting uploader with capturer present', () => {
-      pipeline.setCapturer({
+      k21.setCapturer({
         fps: 1,
         duration: 5
       })
-      expect(() => pipeline.setUploader('test-uploader')).toThrow(
+      expect(() => k21.setUploader('test-uploader')).toThrow(
         'Cannot set Uploader when Capturer is already set'
       )
     })
@@ -125,7 +125,7 @@ describe('K21Pipeline', () => {
 
   describe('run', () => {
     test('should throw error when neither capturer nor uploader is set', async () => {
-      expect(pipeline.run()).rejects.toThrow(
+      expect(k21.run()).rejects.toThrow(
         'Either Capturer or Uploader must be set'
       )
     })
@@ -135,8 +135,8 @@ describe('K21Pipeline', () => {
         fps: 1,
         duration: 5
       }
-      pipeline.setCapturer(config)
-      expect(pipeline.run()).resolves.not.toThrow()
+      k21.setCapturer(config)
+      expect(k21.run()).resolves.not.toThrow()
     })
 
     test('should run with video capture config', async () => {
@@ -156,8 +156,8 @@ describe('K21Pipeline', () => {
         saveVideoTo: videoDir,
         videoChunkDuration: videoChunkDuration,
       }
-      pipeline.setCapturer(config)
-      await expect(pipeline.run()).resolves.not.toThrow()
+      k21.setCapturer(config)
+      await expect(k21.run()).resolves.not.toThrow()
 
 
       // Check for video file
@@ -184,8 +184,8 @@ describe('K21Pipeline', () => {
         duration: recordLengthInSeconds,
         saveScreenshotTo: screenshotDir
         }
-      pipeline.setCapturer(config)
-      await expect(pipeline.run()).resolves.not.toThrow();
+      k21.setCapturer(config)
+      await expect(k21.run()).resolves.not.toThrow();
 
       // Check number of screenshots
       const files = fs.readdirSync(screenshotDir);
@@ -198,8 +198,8 @@ describe('K21Pipeline', () => {
         fps: 1,
         duration: 5
       }
-      pipeline.setCapturer(config)
-      const result = await pipeline.run()
+      k21.setCapturer(config)
+      const result = await k21.run()
       expect(result).toEqual([])
     })
 
@@ -208,10 +208,10 @@ describe('K21Pipeline', () => {
         fps: 1,
         duration: 2,
       }
-      pipeline.setCapturer(config)
-      pipeline.setProcessor({}) // Add mock processor
+      k21.setCapturer(config)
+      k21.setProcessor({}) // Add mock processor
 
-      const result = await pipeline.run()
+      const result = await k21.run()
       expect(Array.isArray(result)).toBe(true)
       expect(result.length).toBeGreaterThan(0)
       

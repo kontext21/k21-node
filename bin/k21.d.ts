@@ -1,21 +1,19 @@
 /**
  * Configuration options for screen capture
- * Controls capture parameters, file saving behavior,
- * and output locations for video and screenshots
+ * Controls capture parameters and output locations for video and screenshots
  * @example
- * // Basic capture without saving
+ * // Basic capture configuration
  * const config: CaptureConfig = {
  *   fps: 1,
- *   recordLengthInSeconds: 60
+ *   duration: 60
  * }
  *
- * // Capture with video saving
+ * // Capture with saving options
  * const config: CaptureConfig = {
  *   fps: 1,
- *   recordLengthInSeconds: 60,
- *   saveVideo: true,
- *   outputDirVideo: '/path/to/videos',
- *   videoChunkDurationInSeconds: 60
+ *   duration: 60,
+ *   saveVideoTo: '/path/to/videos',
+ *   videoChunkDuration: 60
  * }
  */
 interface CaptureConfig {
@@ -23,12 +21,12 @@ interface CaptureConfig {
     fps?: number;
     /** Total duration of capture in seconds. Default: 10 */
     duration?: number;
-    /** Whether to save screenshots during capture. Default: false */
-    saveScreenshot?: boolean;
-    /** Whether to save video during capture. Default: false */
-    saveVideo?: boolean;
-    /** Duration of each video chunk in seconds. Required if saveVideo is true. Default: 60 */
-    videoChunkDurationInSeconds?: number;
+    /** Path where screenshots should be saved. If not provided, screenshots won't be saved */
+    saveScreenshotTo?: string;
+    /** Path where video should be saved. If not provided, video won't be saved */
+    saveVideoTo?: string;
+    /** Duration of each video chunk in seconds. Default: 60 */
+    videoChunkDuration?: number;
 }
 /** Configuration for vision-based processing using external vision APIs */
 interface VisionConfig {
@@ -78,7 +76,7 @@ interface ImageData {
     /** Type of processing applied to the frame (e.g., "OCR", "CLASSIFICATION") */
     processingType: string;
 }
-declare class K21Pipeline {
+declare class K21 {
     private capturer;
     private uploader;
     private processor;
@@ -128,4 +126,4 @@ declare class K21Pipeline {
      */
     run(): Promise<ImageData[]>;
 }
-export { K21Pipeline, ImageData, CaptureConfig };
+export { K21, ImageData, CaptureConfig };

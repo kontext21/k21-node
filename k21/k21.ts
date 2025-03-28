@@ -84,7 +84,7 @@ interface ImageData {
     processingType: string;
 }
 
-class K21Pipeline {
+class K21 {
     private capturer: any;
     private uploader: any;
     private processor: any;
@@ -214,4 +214,4 @@ class K21Pipeline {
 }
 
 // Export default instance
-export { K21Pipeline, ImageData, CaptureConfig }
+export { K21, ImageData, CaptureConfig }
