@@ -22,15 +22,11 @@ interface CaptureConfig {
     /** Frames per second for capture. Default: 1 */
     fps?: number;
     /** Total duration of capture in seconds. Default: 10 */
-    recordLengthInSeconds?: number;
+    duration?: number;
     /** Whether to save screenshots during capture. Default: false */
     saveScreenshot?: boolean;
-    /** Directory path for saving screenshots. Required if saveScreenshot is true */
-    outputDirScreenshot?: string;
     /** Whether to save video during capture. Default: false */
     saveVideo?: boolean;
-    /** Directory path for saving video files. Required if saveVideo is true */
-    outputDirVideo?: string;
     /** Duration of each video chunk in seconds. Required if saveVideo is true. Default: 60 */
     videoChunkDurationInSeconds?: number;
 }

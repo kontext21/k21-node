@@ -36,9 +36,7 @@ describe('K21Pipeline', () => {
     test('should set basic config correctly', () => {
       const config = {
         fps: 1,
-        recordLengthInSeconds: 5,
-        saveVideo: false,
-        saveScreenshot: false
+        duration: 5,
       }
       pipeline.setCapturer(config)
       expect(pipeline['capturer']).toEqual({
@@ -53,11 +51,9 @@ describe('K21Pipeline', () => {
 
       const config = {
         fps: 1,
-        recordLengthInSeconds: 5,
-        saveVideo: true,
-        outputDirVideo: videoDir,
-        videoChunkDurationInSeconds: 10,
-        saveScreenshot: false
+        duration: 5,
+        saveVideoTo: videoDir,
+        videoChunkDuration: 10,
       }
       pipeline.setCapturer(config)
       expect(pipeline['capturer']).toEqual({
@@ -73,10 +69,8 @@ describe('K21Pipeline', () => {
 
       const config = {
         fps: 1,
-        recordLengthInSeconds: 5,
-        saveVideo: false,
-        saveScreenshot: true,
-        outputDirScreenshot: screenshotDir
+        duration: 5,
+        saveScreenshotTo: screenshotDir
       }
       pipeline.setCapturer(config)
       expect(pipeline['capturer']).toEqual({
@@ -94,12 +88,10 @@ describe('K21Pipeline', () => {
 
       const config = {
         fps: 1,
-        recordLengthInSeconds: 5,
-        saveVideo: true,
-        outputDirVideo: videoDir,
-        videoChunkDurationInSeconds: 10,
-        saveScreenshot: true,
-        outputDirScreenshot: screenshotDir
+        duration: 5,
+        saveScreenshotTo: screenshotDir,
+        saveVideoTo: videoDir,
+        videoChunkDuration: 10,
       }
       pipeline.setCapturer(config)
       expect(pipeline['capturer']).toEqual({
@@ -114,10 +106,8 @@ describe('K21Pipeline', () => {
       pipeline.setUploader('test-uploader')
       expect(() => pipeline.setCapturer({
         fps: 1,
-        recordLengthInSeconds: 5,
-        saveVideo: false,
-        saveScreenshot: false
-      })).toThrow('Cannot set Capturer when Uploader is already set')
+        duration: 5
+        })).toThrow('Cannot set Capturer when Uploader is already set')
     })
   })
 
@@ -125,9 +115,7 @@ describe('K21Pipeline', () => {
     test('should throw error when setting uploader with capturer present', () => {
       pipeline.setCapturer({
         fps: 1,
-        recordLengthInSeconds: 5,
-        saveVideo: false,
-        saveScreenshot: false
+        duration: 5
       })
       expect(() => pipeline.setUploader('test-uploader')).toThrow(
         'Cannot set Uploader when Capturer is already set'
@@ -145,9 +133,7 @@ describe('K21Pipeline', () => {
     test('should run with basic capture config', async () => {
       const config = {
         fps: 1,
-        recordLengthInSeconds: 5,
-        saveVideo: false,
-        saveScreenshot: false
+        duration: 5
       }
       pipeline.setCapturer(config)
       expect(pipeline.run()).resolves.not.toThrow()
@@ -157,20 +143,18 @@ describe('K21Pipeline', () => {
       const videoDir = path.join(tempDir, 'videos');
       fs.mkdirSync(videoDir, { recursive: true });
 
-      const recordLengthInSeconds = 5
-      const videoChunkDurationInSeconds = 10
+      const duration = 5
+      const videoChunkDuration = 10
 
-      const fullChunks = Math.floor(recordLengthInSeconds / videoChunkDurationInSeconds)
-      const extraChunk = recordLengthInSeconds % videoChunkDurationInSeconds > 0 ? 1 : 0
+      const fullChunks = Math.floor(duration / videoChunkDuration)
+      const extraChunk = duration % videoChunkDuration > 0 ? 1 : 0
       const expectedNumberOfMp4Files = fullChunks + extraChunk
 
       const config = {
         fps: 1,
-        recordLengthInSeconds,
-        saveVideo: true,
-        outputDirVideo: videoDir,
-        videoChunkDurationInSeconds,
-        saveScreenshot: false
+        duration: duration,
+        saveVideoTo: videoDir,
+        videoChunkDuration: videoChunkDuration,
       }
       pipeline.setCapturer(config)
       await expect(pipeline.run()).resolves.not.toThrow()
@@ -197,11 +181,9 @@ describe('K21Pipeline', () => {
 
       const config = {
         fps,
-        recordLengthInSeconds,
-        saveVideo: false,
-        saveScreenshot: true,
-        outputDirScreenshot: screenshotDir
-      }
+        duration: recordLengthInSeconds,
+        saveScreenshotTo: screenshotDir
+        }
       pipeline.setCapturer(config)
       await expect(pipeline.run()).resolves.not.toThrow();
 
@@ -214,9 +196,7 @@ describe('K21Pipeline', () => {
     test('should return empty array for basic capture without processor', async () => {
       const config = {
         fps: 1,
-        recordLengthInSeconds: 5,
-        saveVideo: false,
-        saveScreenshot: false
+        duration: 5
       }
       pipeline.setCapturer(config)
       const result = await pipeline.run()
@@ -226,7 +206,7 @@ describe('K21Pipeline', () => {
     test('should return processed images when processor is set', async () => {
       const config = {
         fps: 1,
-        recordLengthInSeconds: 2,
+        duration: 2,
       }
       pipeline.setCapturer(config)
       pipeline.setProcessor({}) // Add mock processor

@@ -3,25 +3,21 @@ use k21::capture::ScreenCaptureConfig;
 
 #[napi(object)]
 pub struct JsScreenCaptureConfig {
-    pub fps: f64,
-    pub video_chunk_duration_in_seconds: u32,
-    pub save_screenshot: bool,
-    pub save_video: bool,
-    pub record_length_in_seconds: u32,
-    pub output_dir_video: Option<String>,
-    pub output_dir_screenshot: Option<String>,
+    pub fps: Option<f64>,
+    pub duration: Option<u32>,
+    pub save_screenshot_to: Option<String>,
+    pub save_video_to: Option<String>,
+    pub video_chunk_duration: Option<u32>,
 }
 
 impl From<ScreenCaptureConfig> for JsScreenCaptureConfig {
     fn from(config: ScreenCaptureConfig) -> Self {
         Self {
-            fps: config.fps as f64,
-            video_chunk_duration_in_seconds: config.video_chunk_duration_in_seconds as u32,
-            save_screenshot: config.save_screenshot,
-            save_video: config.save_video,
-            record_length_in_seconds: config.record_length_in_seconds as u32,
-            output_dir_video: config.output_dir_video,
-            output_dir_screenshot: config.output_dir_screenshot,
+            fps: config.fps.map(|f| f as f64),
+            duration: config.duration.map(|d| d as u32),
+            save_screenshot_to: config.save_screenshot_to,
+            save_video_to: config.save_video_to,
+            video_chunk_duration: config.video_chunk_duration.map(|d| d as u32),
         }
     }
 }
@@ -29,13 +25,11 @@ impl From<ScreenCaptureConfig> for JsScreenCaptureConfig {
 impl From<JsScreenCaptureConfig> for ScreenCaptureConfig {
     fn from(config: JsScreenCaptureConfig) -> Self {
         Self {
-            fps: config.fps as f32,
-            video_chunk_duration_in_seconds: config.video_chunk_duration_in_seconds as u64,
-            save_screenshot: config.save_screenshot,
-            save_video: config.save_video,
-            record_length_in_seconds: config.record_length_in_seconds as u64,
-            output_dir_video: config.output_dir_video,
-            output_dir_screenshot: config.output_dir_screenshot,
+            fps: config.fps.map(|f| f as f32),
+            duration: config.duration.map(|d| d as u64),
+            save_screenshot_to: config.save_screenshot_to,
+            save_video_to: config.save_video_to,
+            video_chunk_duration: config.video_chunk_duration.map(|d| d as u64),
         }
     }
 }
