@@ -3,7 +3,7 @@ use crate::image::JsImageDataCollection;
 use crate::types::JsProcessorConfig;
 use k21::capture::ScreenCaptureConfig;
 use k21::common::ImageData;
-use k21::process::{run_live_screen_capture_ocr, ProcessorConfig};
+use k21::process::ProcessorConfig;
 
 #[napi(catch_unwind)]
 pub async fn capture_and_process_screen(
@@ -13,7 +13,7 @@ pub async fn capture_and_process_screen(
     let capture_config: ScreenCaptureConfig = js_capture_config.into();
     let processor_config: ProcessorConfig = js_processor_config.into();
 
-    let result: Vec<ImageData> = run_live_screen_capture_ocr(&capture_config, &processor_config)
+    let result: Vec<ImageData> = k21::process::capture_and_process_screen(&capture_config, &processor_config)
         .await
         .into();
 

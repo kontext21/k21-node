@@ -15,3 +15,4 @@ pub mod image;
 pub mod pipeline;
 pub mod process;
 pub mod types;
+pub mod uploader;
