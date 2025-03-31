@@ -31,7 +31,8 @@ impl From<JsImageData> for ImageData {
     }
 }
 
-#[napi]
+#[napi(object)]
+#[derive(Clone)]
 pub struct JsImageDataCollection {
     pub data: Vec<JsImageData>,
 }

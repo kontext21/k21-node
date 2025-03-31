@@ -114,10 +114,7 @@ class K21 {
         throw new Error('Invalid configuration state');
     }
     async handleUploadAndProcess() {
-        console.log('Uploader:', this.uploader);
-        const file = this.uploader.file;
-        console.log('Processing file:', file);
-        return await k21_internal_1.default.processFileUpload(file, this.processor);
+        return await k21_internal_1.default.processFileUpload(this.uploader, this.processor);
     }
     validateRunPrerequisites() {
         const hasCapturer = this.capturer !== null;

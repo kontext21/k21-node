@@ -1,11 +1,11 @@
 import k21 from './k21_internal'
-import { CaptureConfig, ProcessorConfig, UploaderConfig } from './types';
+import { CaptureConfig, ImageData, ProcessorConfig, UploaderConfig } from './types';
 import { validateFilePath, validateAndMergeConfig } from './utils';
 
 class K21 {
-    private capturer: any;
-    private uploader: any;
-    private processor: any;
+    private capturer: CaptureConfig | null;
+    private uploader: UploaderConfig | null;
+    private processor: ProcessorConfig | null;
     private defaultCaptureConfig: CaptureConfig = {
         fps: 1,
         duration: 10,
@@ -40,7 +40,7 @@ class K21 {
         if (this.uploader !== null) {
             throw new Error('Cannot set Capturer when Uploader is already set');
         }
-        this.capturer = validateAndMergeConfig(this.defaultCaptureConfig, captureConfig);
+        this.capturer = validateAndMergeConfig<CaptureConfig>(this.defaultCaptureConfig, captureConfig);
     }
 
     /**
@@ -81,7 +81,7 @@ class K21 {
      * });
      */
     setProcessor(processorConfig?: ProcessorConfig): void {
-        this.processor = validateAndMergeConfig(this.defaultProcessorConfig, processorConfig);
+        this.processor = validateAndMergeConfig<ProcessorConfig>(this.defaultProcessorConfig, processorConfig);
     }
 
     /**
@@ -124,7 +124,8 @@ class K21 {
     }
 
     private async  handleUploadAndProcess(): Promise<ImageData[]> {
-        return await k21.processFileUpload(this.uploader, this.processor);
+        const result = await k21.processFileUpload(this.uploader, this.processor);
+        return result.data;
     }
 
     private validateRunPrerequisites(): void {
