@@ -42,6 +42,12 @@ class K21 {
         if (this.uploader !== null) {
             throw new Error('Cannot set Capturer when Uploader is already set');
         }
+        if (captureConfig?.saveVideoTo) {
+            (0, utils_1.validatePath)(captureConfig.saveVideoTo);
+        }
+        if (captureConfig?.saveScreenshotTo) {
+            (0, utils_1.validatePath)(captureConfig.saveScreenshotTo);
+        }
         this.capturer = (0, utils_1.validateAndMergeConfig)(this.defaultCaptureConfig, captureConfig);
     }
     /**
@@ -114,7 +120,8 @@ class K21 {
         throw new Error('Invalid configuration state');
     }
     async handleUploadAndProcess() {
-        return await k21_internal_1.default.processFileUpload(this.uploader, this.processor);
+        const result = await k21_internal_1.default.processFileUpload(this.uploader, this.processor);
+        return result.data;
     }
     validateRunPrerequisites() {
         const hasCapturer = this.capturer !== null;

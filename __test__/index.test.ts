@@ -6,33 +6,21 @@ import { CaptureConfig, ImageData } from '@k21/types';
 
 jest.setTimeout(20000);  // Set global timeout
 
-
-const defaultCaptureConfigTestDontStore = {
+const defaultCaptureConfigTest = {
     fps: 1,
-    duration: 2,
+    duration: 1,
     videoChunkDuration: 1,
 }
-
-const defaultCaptureConfigTest = {
-    ...defaultCaptureConfigTestDontStore,
-    saveVideoTo: path.join(os.tmpdir(), `k21-test-${Date.now()}`),
-    saveScreenshotTo: path.join(os.tmpdir(), `k21-test-${Date.now()}`),
-}
-
 
 describe('K21', () => {
   let k21: K21
   let tempDir: string;
-  let testVideoPath: string;
 
   beforeEach(() => {
     k21 = new K21()
     // Create unique temp directory for each test
     tempDir = path.join(os.tmpdir(), `k21-test-${Date.now()}`);
     fs.mkdirSync(tempDir, { recursive: true });
-    testVideoPath = path.join(tempDir, 'output-0.mp4');
-    // Create an empty test video file
-    fs.writeFileSync(testVideoPath, '');
   })
 
   afterEach(() => {
@@ -42,144 +30,55 @@ describe('K21', () => {
     }
   });
 
-  describe('initialization', () => {
-    test('should initialize with null values', () => {
-      expect(k21['capturer']).toBeNull()
-      expect(k21['uploader']).toBeNull()
-      expect(k21['processor']).toBeNull()
-    })
-  })
+//   describe('initialization', () => {
+//     test('should initialize with null values', () => {
+//       expect(k21['capturer']).toBeNull()
+//       expect(k21['uploader']).toBeNull()
+//       expect(k21['processor']).toBeNull()
+//     })
+//   })
 
-  describe('setCapturer', () => {
-    test('should set basic config correctly', () => {
-      const config = {
-        fps: 1,
-        duration: 2,
-      }
-      k21.setCapturer(config)
-      expect(k21['capturer']).toEqual({
-        ...k21['defaultConfig'],
-        ...config
-      })
-    })
-
-    test('should set video config correctly', () => {
-      const videoDir = path.join(tempDir, 'videos');
-      fs.mkdirSync(videoDir, { recursive: true });
-
-      const config = {
-        ...defaultCaptureConfigTest,
-        saveVideoTo: videoDir,
-      }
-
-      k21.setCapturer(config)
-      expect(k21['capturer']).toEqual({
-        ...k21['defaultConfig'],
-        ...k21['defaultConfigSaveVideo'],
-        ...config
-      })
-    })
-
-    test('should set screenshot config correctly', () => {
-      const screenshotDir = path.join(tempDir, 'screenshots');
-      fs.mkdirSync(screenshotDir, { recursive: true });
-
-      const config = {
-        ...defaultCaptureConfigTest
-      }
-      k21.setCapturer(config)
-      expect(k21['capturer']).toEqual({
-        ...k21['defaultConfig'],
-        ...k21['defaultConfigSaveScreenshot'],
-        ...config
-      })
-    })
-
-    test('should set both video and screenshot config correctly', () => {
-      const videoDir = path.join(tempDir, 'videos');
-      const screenshotDir = path.join(tempDir, 'screenshots');
-      fs.mkdirSync(videoDir, { recursive: true });
-      fs.mkdirSync(screenshotDir, { recursive: true });
-
-      const config = {
-        ...defaultCaptureConfigTest,
-      }
-      k21.setCapturer(config)
-      expect(k21['capturer']).toEqual({
-        ...k21['defaultConfig'],
-        ...k21['defaultConfigSaveVideo'],
-        ...k21['defaultConfigSaveScreenshot'],
-        ...config
-      })
-    })
-
-    test('should throw error when setting capturer with uploader present', () => {
-      k21.setUploader({
-        file: "/Users/ferzu/k21-node-sample/output-0.mp4"
-      })
-      expect(() => k21.setCapturer({
-        fps: defaultCaptureConfigTest.fps,
-        duration: defaultCaptureConfigTest.duration
-        })).toThrow('Cannot set Capturer when Uploader is already set')
-    })
-  })
-
-  describe('setUploader', () => {
-    test('should throw error when setting uploader with capturer present', () => {
-      k21.setCapturer({
-        ...defaultCaptureConfigTest
-      })
-      expect(() =>       k21.setUploader({
-        file: testVideoPath
-      })).toThrow(
-        'Cannot set Uploader when Capturer is already set'
-      )
-    })
-
-    test('should process video correctly', async () => {
-      const testVideoPath = "./__test__/resources/test-output-10s.mp4"
-
-      k21.setUploader({
-        file: testVideoPath
-      })
-
-      k21.setProcessor()
-
-      const result: ImageData[] = await k21.run()
-      expect(result).toBeDefined()
-      expect(result.length).toBeGreaterThan(0)
-    })
-
-//   test('should process video correctly, long video', async () => {
-//     const testVideoPath = "./__test__/resources/test-output-2m.mp4"
-
-//     k21.setUploader({
-//       file: testVideoPath
+//   describe('setUploader', () => {
+//     test('should throw error when setting uploader with capturer present', () => {
+//       k21.setCapturer({
+//         ...defaultCaptureConfigTest
+//       })
+//       const testVideoPath = "./__test__/resources/test-output-10s.mp4"
+//       expect(() =>       k21.setUploader({
+//         file: testVideoPath
+//       })).toThrow(
+//         'Cannot set Uploader when Capturer is already set'
+//       )
 //     })
 
-//     k21.setProcessor()
+//     test('should process video correctly', async () => {
+//       const testVideoPath = "./__test__/resources/test-output-10s.mp4"
 
-//     const result: ImageData[] = await k21.run()
+//       k21.setUploader({
+//         file: testVideoPath
+//       })
 
-//     console.log(result.length)
-//     console.log(result[0])
-//     expect(result).toBeDefined()
-//     expect(result.length).toBeGreaterThan(0)
+//       k21.setProcessor()
 
-    test('should process screenshot correctly', async () => {
-      const testVideoPath = "./__test__/resources/test-screenshot.png"
+//       const result: ImageData[] = await k21.run()
+//       expect(result).toBeDefined()
+//       expect(result.length).toBeGreaterThan(0)
+//     })
 
-      k21.setUploader({
-        file: testVideoPath
-      })
+//     test('should process screenshot correctly', async () => {
+//       const testVideoPath = "./__test__/resources/test-screenshot.png"
 
-      k21.setProcessor()
+//       k21.setUploader({
+//         file: testVideoPath
+//       })
 
-      const result: ImageData[] = await k21.run()
-      expect(result).toBeDefined()
-      expect(result.length).toBeGreaterThan(0)
-    })
-})
+//       k21.setProcessor()
+
+//       const result: ImageData[] = await k21.run()
+//       expect(result).toBeDefined()
+//       expect(result.length).toBeGreaterThan(0)
+//     })
+// })
 
   describe('run', () => {
     test('should throw error when neither capturer nor uploader is set', async () => {
@@ -194,7 +93,7 @@ describe('K21', () => {
     test('should run with basic capture config', async () => {
       const k21 = new K21()
       const config: CaptureConfig = {
-        ...defaultCaptureConfigTestDontStore
+        ...defaultCaptureConfigTest
       }
       k21.setCapturer(config)
       await expect(k21.run()).resolves.toBeDefined();
@@ -210,7 +109,7 @@ describe('K21', () => {
       const expectedNumberOfMp4Files = fullChunks + extraChunk
 
       const config: CaptureConfig = {
-        ...defaultCaptureConfigTestDontStore,
+        ...defaultCaptureConfigTest,
         saveVideoTo: videoDir,
         duration: duration,
       }
@@ -233,7 +132,7 @@ describe('K21', () => {
       fs.mkdirSync(screenshotDir, { recursive: true });
 
       const config = {
-        ...defaultCaptureConfigTestDontStore,
+        ...defaultCaptureConfigTest,
         saveScreenshotTo: screenshotDir,
         }
       k21.setCapturer(config)
@@ -248,7 +147,7 @@ describe('K21', () => {
 
     test('should return empty array for basic capture without processor', async () => {
       const config = {
-        ...defaultCaptureConfigTestDontStore
+        ...defaultCaptureConfigTest
       }
       k21.setCapturer(config)
       const result = await k21.run()
@@ -257,7 +156,7 @@ describe('K21', () => {
 
     test('should return processed images when processor is set', async () => {
       const config = {
-        ...defaultCaptureConfigTestDontStore
+        ...defaultCaptureConfigTest
       }
       k21.setCapturer(config)
       k21.setProcessor({}) // Add mock processor

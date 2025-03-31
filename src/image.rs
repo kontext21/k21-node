@@ -1,4 +1,4 @@
-use k21::common::{ImageData, ImageDataCollection};
+use k21::common::{ImageData, ImageDataCollection, ProcessingType};
 
 #[napi(object)]
 #[derive(Clone)]
@@ -26,7 +26,7 @@ impl From<JsImageData> for ImageData {
             data.timestamp,
             data.frame_number as u64,
             data.content,
-            data.processing_type.into(),
+            ProcessingType::try_from(data.processing_type.as_str()).unwrap(),
         )
     }
 }

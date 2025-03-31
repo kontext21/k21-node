@@ -1,4 +1,4 @@
-import { CaptureConfig, ProcessorConfig, UploaderConfig } from './types';
+import { CaptureConfig, ImageData, ProcessorConfig, UploaderConfig } from './types';
 declare class K21 {
     private capturer;
     private uploader;

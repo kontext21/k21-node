@@ -1,6 +1,6 @@
 import k21 from './k21_internal'
 import { CaptureConfig, ImageData, ProcessorConfig, UploaderConfig } from './types';
-import { validateFilePath, validateAndMergeConfig } from './utils';
+import { validateFilePath, validateAndMergeConfig, validatePath } from './utils';
 
 class K21 {
     private capturer: CaptureConfig | null;
@@ -39,6 +39,12 @@ class K21 {
     setCapturer(captureConfig?: CaptureConfig): void {
         if (this.uploader !== null) {
             throw new Error('Cannot set Capturer when Uploader is already set');
+        }
+        if (captureConfig?.saveVideoTo) {
+            validatePath(captureConfig.saveVideoTo);
+        }
+        if (captureConfig?.saveScreenshotTo) {
+            validatePath(captureConfig.saveScreenshotTo);
         }
         this.capturer = validateAndMergeConfig<CaptureConfig>(this.defaultCaptureConfig, captureConfig);
     }
@@ -83,6 +89,7 @@ class K21 {
     setProcessor(processorConfig?: ProcessorConfig): void {
         this.processor = validateAndMergeConfig<ProcessorConfig>(this.defaultProcessorConfig, processorConfig);
     }
+
 
     /**
      * Executes the screen capture and processing pipeline
@@ -167,11 +174,6 @@ class K21 {
 
     private async handleCaptureAndProcess(): Promise<ImageData[]> {
         try {
-            console.log('Running routine with:', {
-                capturer: this.capturer,
-                uploader: this.uploader,
-                processor: this.processor,
-            });
             const result = await k21.captureAndProcessScreen(this.capturer, this.processor);
             return result.data;
         } catch (error: any) {

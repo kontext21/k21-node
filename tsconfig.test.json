@@ -11,6 +11,9 @@
       "allowJs": true,
       "resolveJsonModule": true,
       "noImplicitAny": false,
+      "jest": {
+        "watchAll": false
+      },
       "baseUrl": "./k21",
       "paths": {
         "@k21": [

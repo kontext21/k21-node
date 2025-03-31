@@ -1,3 +1,5 @@
+import { ProcessorConfig } from "./types";
+
 function validateAndMergeConfig<T>(defaultConfig: T, newConfig?: T): T {
     if (newConfig === undefined) {
         newConfig = {} as T;
@@ -26,4 +28,25 @@ function validateFilePath(file: string): void {
     }
 }
 
-export { validateAndMergeConfig, validateFilePath }
+ function validatePath(path: string): void {
+    if (!path) {
+        throw new Error('Path is required');
+    }
+
+    // Check if path exists
+    try {
+        const fs = require('fs');
+        if (!fs.existsSync(path)) {
+            throw new Error(`Path does not exist: ${path}`);
+        }
+        
+        const stats = fs.statSync(path);
+        if (stats.isFile()) {  // Changed condition: throw if it IS a file
+            throw new Error(`Path points to a file, but should be a directory: ${path}`);
+        }
+    } catch (error) {
+        throw new Error(`Invalid path: ${path}`);
+    }
+}
+
+export { validateAndMergeConfig, validateFilePath, validatePath }

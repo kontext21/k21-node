@@ -1,6 +1,5 @@
 use k21::{
-    image2text::{OcrConfig, VisionConfig},
-    process::ProcessorConfig,
+    common::ProcessingType, image2text::{OcrConfig, VisionConfig}, process::ProcessorConfig
 };
 
 #[napi(object)]
@@ -40,7 +39,7 @@ impl From<ProcessorConfig> for JsProcessorConfig {
 impl From<JsProcessorConfig> for ProcessorConfig {
     fn from(config: JsProcessorConfig) -> Self {
         Self {
-            processing_type: config.processing_type.into(),
+            processing_type: ProcessingType::try_from(config.processing_type.as_str()).unwrap(),
             vision_config: config.vision_config.map(|c| c.into()),
             ocr_config: config.ocr_config.map(|c| c.into()),
         }
