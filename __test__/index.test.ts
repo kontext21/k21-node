@@ -2,7 +2,7 @@ import { K21 } from '@k21'
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import { CaptureConfig, ImageData } from '@k21/types';
+import { CaptureConfig, ProcessedFrameData } from '@k21/types';
 
 jest.setTimeout(20000);  // Set global timeout
 
@@ -30,55 +30,55 @@ describe('K21', () => {
     }
   });
 
-//   describe('initialization', () => {
-//     test('should initialize with null values', () => {
-//       expect(k21['capturer']).toBeNull()
-//       expect(k21['uploader']).toBeNull()
-//       expect(k21['processor']).toBeNull()
-//     })
-//   })
+  describe('initialization', () => {
+    test('should initialize with null values', () => {
+      expect(k21['capturer']).toBeNull()
+      expect(k21['uploader']).toBeNull()
+      expect(k21['processor']).toBeNull()
+    })
+  })
 
-//   describe('setUploader', () => {
-//     test('should throw error when setting uploader with capturer present', () => {
-//       k21.setCapturer({
-//         ...defaultCaptureConfigTest
-//       })
-//       const testVideoPath = "./__test__/resources/test-output-10s.mp4"
-//       expect(() =>       k21.setUploader({
-//         file: testVideoPath
-//       })).toThrow(
-//         'Cannot set Uploader when Capturer is already set'
-//       )
-//     })
+  describe('setUploader', () => {
+    test('should throw error when setting uploader with capturer present', () => {
+      k21.setCapturer({
+        ...defaultCaptureConfigTest
+      })
+      const testVideoPath = "./__test__/resources/test-output-10s.mp4"
+      expect(() =>       k21.setCapturerFromFile({
+        file: testVideoPath
+      })).toThrow(
+        'Cannot set Uploader when Capturer is already set'
+      )
+    })
 
-//     test('should process video correctly', async () => {
-//       const testVideoPath = "./__test__/resources/test-output-10s.mp4"
+    test('should process video correctly', async () => {
+      const testVideoPath = "./__test__/resources/test-output-10s.mp4"
 
-//       k21.setUploader({
-//         file: testVideoPath
-//       })
+      k21.setCapturerFromFile({
+        file: testVideoPath
+      })
 
-//       k21.setProcessor()
+      k21.setProcessor()
 
-//       const result: ImageData[] = await k21.run()
-//       expect(result).toBeDefined()
-//       expect(result.length).toBeGreaterThan(0)
-//     })
+      const result: ProcessedFrameData[] = await k21.run()
+      expect(result).toBeDefined()
+      expect(result.length).toBeGreaterThan(0)
+    })
 
-//     test('should process screenshot correctly', async () => {
-//       const testVideoPath = "./__test__/resources/test-screenshot.png"
+    test('should process screenshot correctly', async () => {
+      const testVideoPath = "./__test__/resources/test-screenshot.png"
 
-//       k21.setUploader({
-//         file: testVideoPath
-//       })
+      k21.setCapturerFromFile({
+        file: testVideoPath
+      })
 
-//       k21.setProcessor()
+      k21.setProcessor()
 
-//       const result: ImageData[] = await k21.run()
-//       expect(result).toBeDefined()
-//       expect(result.length).toBeGreaterThan(0)
-//     })
-// })
+      const result: ProcessedFrameData[] = await k21.run()
+      expect(result).toBeDefined()
+      expect(result.length).toBeGreaterThan(0)
+    })
+})
 
   describe('run', () => {
     test('should throw error when neither capturer nor uploader is set', async () => {

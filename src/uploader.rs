@@ -1,4 +1,4 @@
-use k21::{common::{ImageData, ImageDataCollection}, process::ProcessorConfig, upload::process_upload};
+use k21::{common::ImageData, process::ProcessorConfig, upload::process_upload};
 
 use crate::{image::JsImageDataCollection, types::JsProcessorConfig};
 
@@ -36,7 +36,6 @@ pub async fn process_file_upload(uploader_config: JsUploaderConfig, processor_co
 #[cfg(test)]
 mod tests {
     use k21::{common::ProcessingType, image2text::OcrConfig};
-
     use super::*;
 
     #[tokio::test]

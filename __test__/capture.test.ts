@@ -2,10 +2,9 @@ import { K21 } from '@k21'
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import { CaptureConfig, ImageData } from '@k21/types';
+// import { FileConfig, ImageData } from '@k21/types';
 
 jest.setTimeout(20000);  // Set global timeout
-
 
 const defaultCaptureConfigTest = {
     fps: 1,
@@ -105,7 +104,7 @@ describe('K21', () => {
     })
 
     test('should throw error when setting capturer with uploader present', () => {
-      k21.setUploader({
+      k21.setCapturerFromFile({
         file: "/Users/ferzu/k21-node-sample/output-0.mp4"
       })
       expect(() => k21.setCapturer({

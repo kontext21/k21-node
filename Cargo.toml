@@ -11,7 +11,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 anyhow = "1.0"
-k21 = { git = "https://github.com/kontext21/k21.git", revision = "7e42f744c4961e33ab51f24d19e63f02f11ad701" }
+k21 = { git = "https://github.com/kontext21/k21.git", revision = "d7ec56c39144ac9ee226fddf34d91ba09eea7ebf" }
 # k21 = { path = "../k21/libs/k21/" }
 napi = { version = "2.16.13", default-features = false, features = [
   "napi8",

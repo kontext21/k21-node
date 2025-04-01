@@ -36,7 +36,7 @@ declare class K21 {
      *   - boundingBoxes: true
      * @example
      * // Basic OCR processing
-     * pipeline.setProcessor({
+     * k21.setProcessor({
      *   processingType: "OCR",
      * });
      */
@@ -51,7 +51,7 @@ declare class K21 {
      * @throws Error if neither capturer nor uploader is set
      * @throws Error if screen capture or processing fails
      * @example
-     * const results = await pipeline.run();
+     * const results = await k21.run();
      * // Returns empty array if no processor is set
      */
     run(): Promise<ImageData[]>;

@@ -43,6 +43,6 @@ describe('K21', () => {
         //     expect(() => k21.run()).toThrow()
         // })
     })
-    
+
 })
   
