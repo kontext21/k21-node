@@ -1,6 +1,6 @@
 {
   "name": "@kontext21/k21-linux-x64-musl",
-  "version": "0.17.3",
+  "version": "0.17.4",
   "os": [
     "linux"
   ],
