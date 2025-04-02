@@ -1,6 +1,6 @@
 {
   "name": "@kontext21/k21-android-arm-eabi",
-  "version": "0.17.4",
+  "version": "0.17.5",
   "os": [
     "android"
   ],
