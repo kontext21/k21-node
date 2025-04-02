@@ -30,7 +30,7 @@ yarn add @kontext21/k21
 
 After `yarn build/npm run build` command, you can see `package-template.[darwin|win32|linux].node` file in project root. This is the native addon built from [lib.rs](./src/lib.rs).
 
-### Build Rust + Node, create TS file and move them into bin/ folder
+### For local Development: Build Rust + Node, create TS file and move them into bin/ folder
 
 ```
 yarn run bp
