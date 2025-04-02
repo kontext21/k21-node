@@ -106,7 +106,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bindings-${{ matrix.settings.target }}
-          path: bin/*.node
+          path: k21/*.node
           if-no-files-found: error
 
   publish:
