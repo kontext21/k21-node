@@ -68,13 +68,11 @@ jobs:
           echo "CARGO_NET_GIT_FETCH_WITH_CLI=true" >> $GITHUB_ENV
       - name: Setup node
         uses: actions/setup-node@v4
-        if: ${{ !matrix.settings.docker }}
         with:
           node-version: 20
           cache: yarn
       - name: Install
         uses: dtolnay/rust-toolchain@stable
-        if: ${{ !matrix.settings.docker }}
         with:
           toolchain: stable
           targets: ${{ matrix.settings.target }}
@@ -88,82 +86,34 @@ jobs:
             .cargo-cache
             target/
           key: ${{ matrix.settings.target }}-cargo-${{ matrix.settings.host }}
-      - uses: goto-bus-stop/setup-zig@v2
-        if: ${{ matrix.settings.target == 'armv7-unknown-linux-gnueabihf' }}
-        with:
-          version: 0.13.0
-      - name: Setup toolchain
-        run: ${{ matrix.settings.setup }}
-        if: ${{ matrix.settings.setup }}
-        shell: bash
       - name: Install dependencies
         run: yarn install
-      - name: Build in docker
-        uses: addnab/docker-run-action@v3
-        if: ${{ matrix.settings.docker }}
-        with:
-          image: ${{ matrix.settings.docker }}
-          options: '--user 0:0 -v ${{ github.workspace }}/.cargo-cache/git/db:/usr/local/cargo/git/db -v ${{ github.workspace }}/.cargo/registry/cache:/usr/local/cargo/registry/cache -v ${{ github.workspace }}/.cargo/registry/index:/usr/local/cargo/registry/index -v ${{ github.workspace }}:/build -w /build'
-          run: ${{ matrix.settings.build }}
       - name: Build
-        run: ${{ matrix.settings.build }}
-        if: ${{ !matrix.settings.docker }}
+        run: |
+          ${{ matrix.settings.build }}
+          yarn build:ts
+          yarn cp:bin
         shell: bash
+      
+      - name: List files
+        run: |
+          echo "Current directory:"
+          ls -la
+          echo "bin directory:"
+          ls -la bin || true
+        shell: bash
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: bindings-${{ matrix.settings.target }}
-          path: ${{ env.APP_NAME }}.*.node
+          path: bin/*.node
           if-no-files-found: error
-  # Commenting out the test job to disable testing
-  # test-macOS-windows-binding:
-  #   name: Test bindings on ${{ matrix.settings.target }} - node@${{ matrix.node }}
-  #   needs:
-  #     - build
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       settings:
-  #         # https://github.com/kontext21/k21-node/issues/2
-  #         # - host: windows-latest
-  #         #   target: x86_64-pc-windows-msvc
-  #         #   architecture: x64
-  #         - host: macos-latest
-  #           target: aarch64-apple-darwin
-  #           architecture: arm64
-  #         - host: macos-latest
-  #           target: x86_64-apple-darwin
-  #           architecture: x64
-  #       node:
-  #         - '18'
-  #         - '20'
-  #   runs-on: ${{ matrix.settings.host }}
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Setup node
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: ${{ matrix.node }}
-  #         cache: yarn
-  #         architecture: ${{ matrix.settings.architecture }}
-  #     - name: Install dependencies
-  #       run: yarn install
-  #     - name: Download artifacts
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: bindings-${{ matrix.settings.target }}
-  #         path: .
-  #     - name: List packages
-  #       run: ls -R .
-  #       shell: bash
-  #     - name: Test bindings
-  #       run: yarn test
+
   publish:
     name: Publish
     runs-on: ubuntu-latest
     needs:
-      # Remove dependency on testing job
-      # - test-macOS-windows-binding
       - build
     steps:
       - uses: actions/checkout@v4
