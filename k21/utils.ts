@@ -1,14 +1,26 @@
 import { ProcessorConfig } from "./types";
 
-function validateAndMergeConfig<T>(defaultConfig: T, newConfig?: T): T {
+function validateAndMergeConfig<T extends object>(defaultConfig: T, newConfig?: T): T {
     if (newConfig === undefined) {
         newConfig = {} as T;
     }
 
-    return {
-        ...defaultConfig,
-        ...newConfig
-    };
+    const merged = { ...defaultConfig };
+
+    for (const [key, value] of Object.entries(newConfig)) {
+        if (value && typeof value === 'object' && !Array.isArray(value)) {
+            // If the property is an object (and not an array), recursively merge
+            merged[key as keyof T] = validateAndMergeConfig(
+                defaultConfig[key as keyof T] as object,
+                value as object
+            ) as T[keyof T];
+        } else {
+            // For non-object values, simply override
+            merged[key as keyof T] = value as T[keyof T];
+        }
+    }
+
+    return merged;
 }
 
 function validateFilePath(file: string): void {

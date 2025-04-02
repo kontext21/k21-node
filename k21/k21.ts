@@ -16,7 +16,7 @@ class K21 {
         processingType: 'OCR',
         ocrConfig: {
             ocrModel: 'default',
-            boundingBoxes: true,
+            boundingBoxes: false,
         },
     };
 
