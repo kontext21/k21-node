@@ -1,6 +1,6 @@
 {
   "name": "@kontext21/k21-win32-x64-msvc",
-  "version": "0.17.1",
+  "version": "0.17.2",
   "os": [
     "win32"
   ],
