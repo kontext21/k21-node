@@ -35,7 +35,7 @@ interface OcrConfig {
     /** OCR Engine Mode (OEM) - controls which engine(s) are used */
     oem?: number;
 }
-interface UploaderConfig {
+interface CaptureFromFileConfig {
     /** Base URL for the uploader API endpoint */
     file: string;
 }
@@ -53,7 +53,7 @@ interface ProcessorConfig {
  * Contains metadata about the capture time, frame sequence,
  * and the results of processing (like OCR text)
  */
-interface ImageData {
+interface ProcessedFrameData {
     /** ISO timestamp when the frame was captured */
     timestamp: string;
     /** Sequential number of the frame in the capture sequence */
@@ -63,4 +63,4 @@ interface ImageData {
     /** Type of processing applied to the frame (e.g., "OCR", "CLASSIFICATION") */
     processingType: string;
 }
-export { CaptureConfig, UploaderConfig, ProcessorConfig, ImageData };
+export { CaptureConfig, CaptureFromFileConfig, ProcessorConfig, ProcessedFrameData };

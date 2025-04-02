@@ -1,6 +1,7 @@
 import k21 from './k21_internal'
 import { CaptureConfig, ProcessedFrameData, ProcessorConfig, CaptureFromFileConfig } from './types';
 import { validateFilePath, validateAndMergeConfig, validatePath } from './utils';
+import path from 'path';
 
 class K21 {
     private capturer: CaptureConfig | null;
@@ -30,12 +31,18 @@ class K21 {
      * @param config - Optional capture configuration. If not provided, default values will be used:
      * - fps: 1
      * - duration: 10
-     * - saveVideo: false
      * - saveVideoTo: ''
-     * - videoChunkDuration: 60
-     * - saveScreenshot: false
      * - saveScreenshotTo: ''
+     * - videoChunkDuration: 60
      * @throws Error if file capturer is already set
+     * @example
+     * k21.setCapturer({
+     *   fps: 1,
+     *   duration: 10,
+     *   saveVideoTo: './',
+     *   saveScreenshotTo: './',
+     *   videoChunkDuration: 60
+     * });
      */
     setCapturer(captureConfig?: CaptureConfig): void {
         if (this.uploader !== null) {
@@ -66,12 +73,17 @@ class K21 {
             throw new Error('Uploader file is required');
         }
 
-        if (!capturerFromFile.file.match(/\.(mp4|png)$/i)) {
+        // Convert to absolute path
+        const absolutePath = path.isAbsolute(capturerFromFile.file) 
+            ? capturerFromFile.file 
+            : path.resolve(process.cwd(), capturerFromFile.file);
+
+        if (!absolutePath.match(/\.(mp4|png)$/i)) {
             throw new Error('File must be either .mp4 or .png');
         }
 
-        validateFilePath(capturerFromFile.file);
-        this.uploader = capturerFromFile;
+        validateFilePath(absolutePath);
+        this.uploader = { file: absolutePath };
     }
 
     /**
@@ -82,9 +94,12 @@ class K21 {
      *   - ocrModel: 'default'
      *   - boundingBoxes: true
      * @example
-     * // Basic OCR processing
      * k21.setProcessor({
      *   processingType: "OCR",
+     *   ocrConfig: {
+     *     ocrModel: "default",
+     *     boundingBoxes: true
+     *   }
      * });
      */
     setProcessor(processorConfig?: ProcessorConfig): void {
@@ -101,8 +116,9 @@ class K21 {
      * @throws Error if neither screen capturer nor file capturer is set
      * @throws Error if screen capture or processing fails
      * @example
-     * const results = await k21.run();
-     * // Returns empty array if no processor is set
+     * // Capture and process frames
+     * const frames = await k21.run();
+     * // Returns array of ProcessedFrameData objects, or empty array if no processor is set
      */
     async run(): Promise<ProcessedFrameData[]> {
         this.validateRunPrerequisites();

@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.K21 = void 0;
 const k21_internal_1 = __importDefault(require("./k21_internal"));
 const utils_1 = require("./utils");
+const path_1 = __importDefault(require("path"));
 class K21 {
     capturer;
     uploader;
@@ -30,13 +31,19 @@ class K21 {
      * Sets the screen capture configuration
      * @param config - Optional capture configuration. If not provided, default values will be used:
      * - fps: 1
-     * - recordLengthInSeconds: 10
-     * - saveVideo: false
-     * - outputDirVideo: ''
-     * - videoChunkDurationInSeconds: 60
-     * - saveScreenshot: false
-     * - outputDirScreenshot: ''
-     * @throws Error if uploader is already set
+     * - duration: 10
+     * - saveVideoTo: ''
+     * - saveScreenshotTo: ''
+     * - videoChunkDuration: 60
+     * @throws Error if file capturer is already set
+     * @example
+     * k21.setCapturer({
+     *   fps: 1,
+     *   duration: 10,
+     *   saveVideoTo: './',
+     *   saveScreenshotTo: './',
+     *   videoChunkDuration: 60
+     * });
      */
     setCapturer(captureConfig) {
         if (this.uploader !== null) {
@@ -51,24 +58,28 @@ class K21 {
         this.capturer = (0, utils_1.validateAndMergeConfig)(this.defaultCaptureConfig, captureConfig);
     }
     /**
-     * Sets the uploader configuration
-     * @param uploader - Configuration for uploading files. Must include:
-     * - file: Valid path to the file to be processed
-     * @throws Error if uploader file path is invalid
-     * @throws Error if Capturer is already set
+     * Sets the configuration for capturing from a file
+     * @param capturerFromFile - Configuration for processing files. Must include:
+     * - file: Valid path to the file to be processed (.mp4 or .png)
+     * @throws Error if file path is invalid
+     * @throws Error if screen capturer is already set
      */
-    setUploader(uploader) {
+    setCapturerFromFile(capturerFromFile) {
         if (this.capturer !== null) {
             throw new Error('Cannot set Uploader when Capturer is already set');
         }
-        if (uploader.file === undefined) {
+        if (capturerFromFile.file === undefined) {
             throw new Error('Uploader file is required');
         }
-        if (!uploader.file.match(/\.(mp4|png)$/i)) {
+        // Convert to absolute path
+        const absolutePath = path_1.default.isAbsolute(capturerFromFile.file)
+            ? capturerFromFile.file
+            : path_1.default.resolve(process.cwd(), capturerFromFile.file);
+        if (!absolutePath.match(/\.(mp4|png)$/i)) {
             throw new Error('File must be either .mp4 or .png');
         }
-        (0, utils_1.validateFilePath)(uploader.file);
-        this.uploader = uploader;
+        (0, utils_1.validateFilePath)(absolutePath);
+        this.uploader = { file: absolutePath };
     }
     /**
      * Sets the processor configuration for image processing
@@ -78,9 +89,12 @@ class K21 {
      *   - ocrModel: 'default'
      *   - boundingBoxes: true
      * @example
-     * // Basic OCR processing
-     * pipeline.setProcessor({
+     * k21.setProcessor({
      *   processingType: "OCR",
+     *   ocrConfig: {
+     *     ocrModel: "default",
+     *     boundingBoxes: true
+     *   }
      * });
      */
     setProcessor(processorConfig) {
@@ -88,16 +102,17 @@ class K21 {
     }
     /**
      * Executes the screen capture and processing pipeline
-     * @returns Promise<ImageData[]> Array of processed images with their metadata:
+     * @returns Promise<ProcessedFrameData[]> Array of processed frames with their metadata:
      * - timestamp: ISO timestamp of capture
      * - frameNumber: Sequential frame number
      * - content: Processed content (e.g., OCR text)
      * - processingType: Type of processing applied
-     * @throws Error if neither capturer nor uploader is set
+     * @throws Error if neither screen capturer nor file capturer is set
      * @throws Error if screen capture or processing fails
      * @example
-     * const results = await pipeline.run();
-     * // Returns empty array if no processor is set
+     * // Capture and process frames
+     * const frames = await k21.run();
+     * // Returns array of ProcessedFrameData objects, or empty array if no processor is set
      */
     async run() {
         this.validateRunPrerequisites();
@@ -116,7 +131,6 @@ class K21 {
         if (hasUploader && hasProcessor) {
             return this.handleUploadAndProcess();
         }
-        // This should never happen due to validateRunPrerequisites
         throw new Error('Invalid configuration state');
     }
     async handleUploadAndProcess() {
@@ -155,11 +169,6 @@ class K21 {
     }
     async handleCaptureAndProcess() {
         try {
-            console.log('Running routine with:', {
-                capturer: this.capturer,
-                uploader: this.uploader,
-                processor: this.processor,
-            });
             const result = await k21_internal_1.default.captureAndProcessScreen(this.capturer, this.processor);
             return result.data;
         }
