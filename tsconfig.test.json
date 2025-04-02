@@ -25,6 +25,7 @@
       }
     },
     "exclude": [
-      "./bin/*",
+      "./bin",
+      "./jest.config.ts"
     ]
   }
