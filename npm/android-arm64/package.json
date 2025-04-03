@@ -1,6 +1,6 @@
 {
   "name": "@kontext21/k21-android-arm64",
-  "version": "0.17.6",
+  "version": "0.18.0",
   "os": [
     "android"
   ],

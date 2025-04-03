@@ -1,6 +1,6 @@
 {
   "name": "@kontext21/k21-freebsd-x64",
-  "version": "0.17.6",
+  "version": "0.18.0",
   "os": [
     "freebsd"
   ],
