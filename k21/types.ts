@@ -29,7 +29,7 @@ interface VisionConfig {
 interface OcrConfig {
     /** OCR model to use (e.g., "tesseract", "native", "default") */
     ocrModel?: string;
-    /** Whether to include text bounding box coordinates in results */
+    /** Whether to include text bounding box coordinates in results*/
     boundingBoxes?: boolean;
     /** Dots per inch for image processing. Higher values for smaller text */
     dpi?: number;
