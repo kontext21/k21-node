@@ -757,11 +757,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kontext21/k21@npm:^0.17.0, @kontext21/k21@workspace:.":
+"@kontext21/k21@workspace:.":
   version: 0.0.0-use.local
   resolution: "@kontext21/k21@workspace:."
   dependencies:
-    "@kontext21/k21": "npm:^0.17.0"
     "@napi-rs/cli": "npm:^2.18.4"
     "@swc-node/register": "npm:^1.10.6"
     "@swc/core": "npm:^1.6.13"

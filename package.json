@@ -100,7 +100,6 @@
   },
   "packageManager": "yarn@4.6.0",
   "dependencies": {
-    "@kontext21/k21": "^0.17.0",
     "cpx": "^1.5.0",
     "ts-jest": "^29.3.0"
   }
