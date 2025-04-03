@@ -1,6 +1,6 @@
 {
   "name": "@kontext21/k21-linux-x64-gnu",
-  "version": "0.20.0",
+  "version": "0.21.0",
   "os": [
     "linux"
   ],
