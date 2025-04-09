@@ -1,5 +1,5 @@
 import k21 from './k21_internal'
-import { CaptureConfig, ProcessedFrameData, ProcessorConfig, CaptureFromFileConfig } from './types';
+import { CaptureConfig, ProcessedFrameData, ProcessorConfig, CaptureFromFileConfig, captureConfigKeys, processorConfigKeys } from './types';
 import { validateFilePath, validateAndMergeConfig, validatePath } from './utils';
 import path from 'path';
 
@@ -54,7 +54,7 @@ class K21 {
         if (captureConfig?.saveScreenshotTo) {
             validatePath(captureConfig.saveScreenshotTo);
         }
-        this.capturer = validateAndMergeConfig<CaptureConfig>(this.defaultCaptureConfig, captureConfig);
+        this.capturer = validateAndMergeConfig<CaptureConfig>(this.defaultCaptureConfig, captureConfigKeys, captureConfig);
     }
 
     /**
@@ -103,7 +103,7 @@ class K21 {
      * });
      */
     setProcessor(processorConfig?: ProcessorConfig): void {
-        this.processor = validateAndMergeConfig<ProcessorConfig>(this.defaultProcessorConfig, processorConfig);
+        this.processor = validateAndMergeConfig<ProcessorConfig>(this.defaultProcessorConfig, processorConfigKeys, processorConfig);
     }
 
     /**

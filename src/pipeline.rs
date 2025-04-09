@@ -34,6 +34,7 @@ mod tests {
             save_screenshot_to: Some("./".to_string()),
             save_video_to: Some("./".to_string()),
             video_chunk_duration: Some(10),
+            quality: Some(100),
         };
 
         let js_processor_config = JsProcessorConfig {

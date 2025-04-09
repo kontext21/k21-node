@@ -8,6 +8,7 @@ pub struct JsScreenCaptureConfig {
     pub save_screenshot_to: Option<String>,
     pub save_video_to: Option<String>,
     pub video_chunk_duration: Option<u32>,
+    pub quality: Option<u32>
 }
 
 impl From<ScreenCaptureConfig> for JsScreenCaptureConfig {
@@ -18,6 +19,7 @@ impl From<ScreenCaptureConfig> for JsScreenCaptureConfig {
             save_screenshot_to: config.save_screenshot_to,
             save_video_to: config.save_video_to,
             video_chunk_duration: config.video_chunk_duration.map(|d| d as u32),
+            quality: config.quality.map(|q| q as u32),
         }
     }
 }
@@ -30,6 +32,7 @@ impl From<JsScreenCaptureConfig> for ScreenCaptureConfig {
             save_screenshot_to: config.save_screenshot_to,
             save_video_to: config.save_video_to,
             video_chunk_duration: config.video_chunk_duration.map(|d| d as u64),
+            quality: config.quality.map(|q| q as u8),
         }
     }
 }

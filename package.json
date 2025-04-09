@@ -48,7 +48,7 @@
     "build": "napi build --platform --release k21",
     "build:ts": "rimraf bin && tsc -p tsconfig.build.json",
     "build:debug": "napi build --platform",
-    "cp:bin": "cpx ./k21/*.node bin/",
+    "cp:bin": "cp ./k21/*.node bin/",
     "format": "run-p format:prettier format:rs format:toml",
     "format:prettier": "prettier . -w",
     "format:toml": "taplo format",
@@ -64,7 +64,6 @@
     "@swc-node/register": "^1.10.6",
     "@swc/core": "^1.6.13",
     "@taplo/cli": "^0.7.0",
-    "@types/cpx": "^1",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.10",
     "chalk": "^5.3.0",
@@ -100,7 +99,6 @@
   },
   "packageManager": "yarn@4.6.0",
   "dependencies": {
-    "cpx": "^1.5.0",
     "ts-jest": "^29.3.0"
   }
 }

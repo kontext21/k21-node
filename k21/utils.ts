@@ -1,22 +1,36 @@
-import { ProcessorConfig } from "./types";
+import { CaptureConfig, ProcessorConfig } from "./types";
 
-function validateAndMergeConfig<T extends object>(defaultConfig: T, newConfig?: T): T {
+function isInvalidKey(key: string, validKeys: readonly string[]): boolean {
+    return !validKeys.includes(key);
+}
+
+function validateAndMergeConfig<T extends object>(defaultConfig: T, configKeys: readonly string[], newConfig?: T): T {
     if (newConfig === undefined) {
         newConfig = {} as T;
+    }
+
+    // Check for unknown fields early
+    for (const key of Object.keys(newConfig)) {
+        if (isInvalidKey(key, configKeys)) {
+            throw new Error(`Unknown configuration field: "${key}". Valid fields are: ${configKeys.join(', ')}`);
+        }
     }
 
     const merged = { ...defaultConfig };
 
     for (const [key, value] of Object.entries(newConfig)) {
-        if (value && typeof value === 'object' && !Array.isArray(value)) {
-            // If the property is an object (and not an array), recursively merge
-            merged[key as keyof T] = validateAndMergeConfig(
-                defaultConfig[key as keyof T] as object,
-                value as object
-            ) as T[keyof T];
-        } else {
-            // For non-object values, simply override
-            merged[key as keyof T] = value as T[keyof T];
+        if (!isInvalidKey(key, configKeys)) {
+            if (value && typeof value === 'object' && !Array.isArray(value)) {
+                // If the property is an object (and not an array), recursively merge
+                merged[key as keyof T] = validateAndMergeConfig(
+                    defaultConfig[key as keyof T] as object,
+                    Object.keys(defaultConfig[key as keyof T] as object) as readonly string[],
+                    value as object
+                ) as T[keyof T];
+            } else {
+                // For non-object values, simply override
+                merged[key as keyof T] = value as T[keyof T];
+            }
         }
     }
 
@@ -40,7 +54,7 @@ function validateFilePath(file: string): void {
     }
 }
 
- function validatePath(path: string): void {
+function validatePath(path: string): void {
     if (!path) {
         throw new Error('Path is required');
     }

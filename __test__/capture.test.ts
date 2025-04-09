@@ -52,6 +52,16 @@ describe('K21', () => {
       })
     })
 
+    test('should throw error when setting invalid field in config', () => {
+      const invalidConfig = {
+        ...defaultCaptureConfigTest,
+        invalidField: "test"  // This field doesn't exist in CaptureConfig
+      }
+      expect(() => k21.setCapturer(invalidConfig)).toThrow(
+        'Unknown configuration field: "invalidField". Valid fields are: fps, duration, saveScreenshotTo, saveVideoTo, videoChunkDuration, quality'
+      )
+    })
+
     test('should set video config correctly', () => {
       const videoDir = path.join(tempDir, 'videos');
       fs.mkdirSync(videoDir, { recursive: true });
@@ -105,7 +115,7 @@ describe('K21', () => {
 
     test('should throw error when setting capturer with uploader present', () => {
       k21.setCapturerFromFile({
-        file: "/Users/ferzu/k21-node-sample/output-0.mp4"
+        file: "/Users/ferzu/kontext21/k21-node-sample/output-0.mp4"
       })
       expect(() => k21.setCapturer({
         ...defaultCaptureConfigTest,

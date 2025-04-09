@@ -11,7 +11,11 @@ interface CaptureConfig {
     saveVideoTo?: string;
     /** Duration of each video chunk in seconds. Default: 60 */
     videoChunkDuration?: number;
+    /** Quality of the video. Default: 100 */
+    quality?: number;
 }
+
+const captureConfigKeys = ['fps', 'duration', 'saveScreenshotTo', 'saveVideoTo', 'videoChunkDuration', 'quality'] as const;
 
 /** Configuration for vision-based processing using external vision APIs */
 interface VisionConfig {
@@ -24,6 +28,8 @@ interface VisionConfig {
     /** Optional prompt to guide the vision model's analysis */
     prompt?: string;
 }
+
+const visionConfigKeys = ['url', 'apiKey', 'model', 'prompt'] as const;
 
 /** Configuration for Optical Character Recognition (OCR) processing */
 interface OcrConfig {
@@ -44,6 +50,8 @@ interface CaptureFromFileConfig {
     file: string;
 }
 
+const captureFromFileConfigKeys = ['file'] as const;
+
 /** Main configuration for image processing pipeline */
 interface ProcessorConfig {
     /** Type of processing to apply ("OCR", "Vision") */
@@ -53,6 +61,8 @@ interface ProcessorConfig {
     /** Configuration for vision-based processing */
     visionConfig?: VisionConfig;
 }
+
+const processorConfigKeys = ['processingType', 'ocrConfig', 'visionConfig'] as const;
 
 /** 
  * Represents a processed frame from the screen capture
@@ -70,4 +80,6 @@ interface ProcessedFrameData {
     processingType: string;
 }
 
-export { CaptureConfig, CaptureFromFileConfig, ProcessorConfig, ProcessedFrameData }
+const processedFrameDataKeys = ['timestamp', 'frameNumber', 'content', 'processingType'] as const;
+
+export { CaptureConfig, CaptureFromFileConfig, ProcessorConfig, ProcessedFrameData, captureConfigKeys, captureFromFileConfigKeys, processorConfigKeys, processedFrameDataKeys }
